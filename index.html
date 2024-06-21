@@ -215,7 +215,8 @@ if method == "GET":
 elif method == "POST":
 	length = int(os.environ["CONTENT_LENGTH"])
 	param = sys.stdin.read(length)
-paramdict = dict([[urllib.parse.unquote(y) for y in x.split("=")] for x in param.split("&")])
+paramlist = [[urllib.parse.unquote(z) for z in y] for y in [x.split("=") for x in param.split("&")] if len(y) == 2]
+paramdict = dict(paramlist) 
 
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
 print("Content-type: text/html")
@@ -233,7 +234,7 @@ print("""
 </body>
 </html>
 """ % (
-    paramdict["name"]
+    paramdict.get("name", "")
 ))
 ```
 
