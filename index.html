@@ -164,7 +164,7 @@ import os
 import sys
 print("Content-type: text/html")
 print()
-print(environ["REQUEST_METHOD"])
+print(os.environ["REQUEST_METHOD"])
 ```
 
 ---
@@ -216,6 +216,7 @@ elif method == "POST":
 	param = sys.stdin.read(length)
 paramdict = dict([[urllib.parse.unquote(y) for y in x.split("=")] for x in param.split("&")])
 
+sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="UTF-8")
 print("Content-type: text/html")
 print()
 print("""
