@@ -1,0 +1,266 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+	<title>reveal.js</title>
+
+	<link rel="stylesheet" href="dist/reset.css">
+	<link rel="stylesheet" href="dist/reveal.css">
+	<link rel="stylesheet" href="dist/theme/black.css">
+	<!-- Theme used for syntax highlighted code -->
+	<link rel="stylesheet" href="plugin/highlight/monokai.css">
+</head>
+
+<body>
+	<div class="reveal">
+		<div class="slides">
+			<section data-markdown="" data-separator="^\n---$" data-separator-vertical="^\n>>>$">
+				<script type="text/template">
+## Webアプリ基礎入門(4)
+
+（株）ボールド 技術部 鳥海秀一
+
+---
+### 前回の振り返り
+- - -
+* HTMLを利用してアプリを作成するには、ユーザの入力をサーバに伝える仕組みが必要となる
+* HTMLの要素の一つであるFORM要素はそのために導入された
+* 現在ではJavaScriptを使用してサーバに伝える方法が主流となっている
+
+---
+### FORM要素
+- - -
+* ユーザが入力した情報をWEBサーバに送信するために最初に導入された仕組み
+* 送信メソッドとしてGET、あるいはPOSTを選択することができる
+
+---
+### FORM要素のデータ送信形式
+- - -
+* GET、POST両メソッドともにkey1=value1&key2=value2...の形式でデータを送信する
+* 上記データはURLエンコードされてサーバに送られる
+* GETはURIの一部に、POSTはボディ部に情報を追加する
+
+---
+### GETとPOSTの使い分けについて
+- - -
+* GETはデータの取得が目的のときに使用する
+* POSTはデータの取得だけでなく、コンテンツの内容を変更する目的があるときに使用する
+* WebAPIの方式の一つであるSOAPは上記使い分けを完全に無視した
+
+---
+### URIエンコードとは
+- - -
+* URIには英数字と一部の記号しか使用できないという制限がある
+* 上記以外の文字をURLで使用するための仕組みがURIエンコードと呼ばれる
+* JavaScriptを使えばURIエンコードとデコードが簡単に行える
+
+---
+### CGIとは
+- - -
+* ウェブサーバ上でユーザプログラムを動作させるための仕組み
+* 下記のURLを参照
+	* https://www.infraexpert.com/study/tcpip16.5.html
+
+---
+### 前回の振り返りはここまで
+
+---
+### 今回のテーマ
+- - -
+GETとPOSTのデータを受け取る
+
+---
+### データの受信方法
+- - -
+* クライアントからGETとPOSTのどちらで送信されたか環境変数から受信する
+* GETの場合は、送信されたデータを環境変数から受信する
+* POSTの場合は、送信データのバイト数を環境変数から受信したのち、そのバイト数分のデータを標準入力から受信する
+* 受信したデータはURLエンコーディングされているのでデコードする
+
+---
+### 環境変数とは
+- - -
+* OSが提供するプロセス間でデータを共有する機能の1つ
+* 親プロセスから子プロセスにのみデータを渡すことができる
+
+---
+### プロセスとは
+- - -
+* OSが提供するプログラムの実行単位
+* それぞれに独立したメモリ空間が与えられる
+* プロセス間のデータのやり取り（プロセス間通信）にはOSが提供する特別な仕組みが必要となる
+
+---
+### 標準入力とは
+- - -
+* OSがプロセス起動時にプロセスに与えるオープンされた入力専門ファイル
+* 通常はキーボードと繋がっているが、リダイレクト他のファイルに切り替えることができる
+* パイプ機能で標準出力と繋ぐことで、プロセス間通信に使うことができる
+
+---
+### 課題1
+- - -
+* pythonを使って環境変数からデータを受信せよ
+
+---
+### 課題1の解答例
+- - -
+* コマンドプロンプトで下記を実行する
+```python
+set AAA=BBB
+python
+import os
+os.environ["AAA"]
+```
+
+---
+### 課題2
+- - -
+* pythonを使って標準入力からデータを受信せよ
+
+---
+### 課題2の解答例
+- - -
+* コマンドプロンプトで下記を実行する
+```python
+python
+import sys
+sys.stdin.readline()
+aaaaaa
+sys.stdin.read(5)
+aaaaaa
+sys.stdin.readline()
+```
+
+---
+### 課題3
+- - -
+* クライアントのFORMで送信されたデータがGETとPOSTのどちらで送信されたか環境変数から確認せよ
+
+---
+### 課題3の解答例1
+- - -
+* python -m http.server --cgi を実行するディレクトリに下記の内容のbody部を持つindex.htmlファイルを用意する
+```html
+<form method="GET" action="./cgi-bin/cgi.py">
+	<label>name<input type="text" name="name"></label>
+	<input type="submit" name="submit" value="GET">
+</form>
+<form method="POST" action="./cgi-bin/cgi.py">
+	<label>name<input type="text" name="name"></label>
+	<input type="submit" name="submit" value="POST">
+</form>
+```
+
+---
+### 課題3の解答例2
+- - -
+* cgi-binディレクトリ配下に下記の内容のcgi.pyファイルを用意する
+```python
+import os
+import sys
+print("Content-type: text/html")
+print()
+print(environ["REQUEST_METHOD"])
+```
+
+---
+### 課題4
+- - -
+* クライアントのFORMで送信されたデータを表示せよ
+
+---
+### 課題4の解答例
+- - -
+* cgi-binディレクトリ配下に下記の内容のcgi.pyファイルを用意する
+
+```python
+import os
+import sys
+
+method = os.environ["REQUEST_METHOD"]
+if method == "GET":
+	param = os.environ["QUERY_STRING"]
+elif method == "POST":
+	length = int(os.environ["CONTENT_LENGTH"])
+	param = sys.stdin.read(length)
+
+print("Content-type: text/html")
+print()
+print(param)
+```
+
+---
+### 課題5
+- - -
+* クライアントのFORMで送信されたデータを使ってHTMLを組み立てよ
+
+---
+### 課題5の解答例
+- - -
+* cgi-binディレクトリ配下に下記の内容のcgi.pyファイルを用意する
+
+```python
+import os
+import sys
+import urllib.parse
+
+method = os.environ["REQUEST_METHOD"]
+if method == "GET":
+	param = os.environ["QUERY_STRING"]
+elif method == "POST":
+	length = int(os.environ["CONTENT_LENGTH"])
+	param = sys.stdin.read(length)
+paramdict = dict([[urllib.parse.unquote(y) for y in x.split("=")] for x in param.split("&")])
+
+print("Content-type: text/html")
+print()
+print("""
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>CGIプログラム</title>
+</head>
+<body>
+  <h1>%s</h1>
+  <a href="../index.html">元に戻る</a>
+</body>
+</html>
+""" % (
+    paramdict["name"]
+))
+```
+
+---
+### まとめ
+- - -
+1. CGIではOSが提供するプロセス間通信機能の環境変数と標準入力を使用してGETとPOSTのデータを受信することができる
+1. フレームワークの助力なしにWebアプリを作るには膨大なプログラミングが必要となる
+
+				</script>
+			</section>
+		</div>
+	</div>
+
+	<script src="dist/reveal.js"></script>
+	<script src="plugin/notes/notes.js"></script>
+	<script src="plugin/markdown/markdown.js"></script>
+	<script src="plugin/highlight/highlight.js"></script>
+	<script>
+		// More info about initialization & config:
+		// - https://revealjs.com/initialization/
+		// - https://revealjs.com/config/
+		Reveal.initialize({
+			hash: true,
+
+			// Learn about plugins: https://revealjs.com/plugins/
+			plugins: [RevealMarkdown, RevealHighlight, RevealNotes]
+		});
+	</script>
+</body>
+
+</html>
