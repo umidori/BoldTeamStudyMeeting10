@@ -239,10 +239,27 @@ print("""
 ```
 
 ---
+### 課題6
+- - -
+* curlコマンドを使用してCGIプログラムにデータを送信せよ
+
+---
+### 課題6の解答例
+- - -
+* コマンドプロンプトから下記のコマンドを実行する
+
+```text
+curl.exe http://localhost:8000/cgi-bin/cgi.py?name=aaa
+curl.exe http://localhost:8000/cgi-bin/cgi.py --get --data-urlencode "name=勉強会"
+curl.exe http://localhost:8000/cgi-bin/cgi.py --data-urlencode "name=勉強会"
+```
+
+---
 ### まとめ
 - - -
 1. CGIではOSが提供するプロセス間通信機能の環境変数と標準入力を使用してGETとPOSTのデータを受信することができる
 1. フレームワークの助力なしにWebアプリを作るには膨大なプログラミングが必要となる
+1. curlコマンドはWebアプリの開発を支援してくれる
 
 				</script>
 			</section>
