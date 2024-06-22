@@ -229,12 +229,16 @@ print("""
   <title>CGIプログラム</title>
 </head>
 <body>
-  <h1>%s</h1>
+  <li>method</li>
+  <ul><li>%s</li></ul>
+  <li>name</li>
+  <ul><li>%s</li></ul>
   <a href="../index.html">元に戻る</a>
 </body>
 </html>
 """ % (
-    paramdict.get("name", "")
+  method,
+  paramdict.get("name", "")
 ))
 ```
 
